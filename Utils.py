@@ -89,10 +89,8 @@ class ColliderUtils:
 
     @staticmethod
     def get_car_vertice(pos, angle, car_size=1):
-        # front_left, front_right, back_left, back_right = RectUtils.get_car_vertice_no_rotate(pos, car_size)
         vert = ColliderUtils.get_car_vertice_no_rotate(pos, car_size)
         angle = np.full((1, len(vert)), angle)
-        # x, y = pos
         x, y = np.full_like(angle, pos[0]), np.full_like(angle, pos[1])
         return np.concatenate(((vert[:,0]-x) * np.cos(angle) + (vert[:,1] - y) * np.sin(angle) + x ,
                          -(vert[:,0]-x) * np.sin(angle) + (vert[:,1] - y) * np.cos(angle) + y ))
@@ -277,12 +275,11 @@ class ImageUtils:
     def draw_laser(image, pos):
         ImageDraw.Draw(image).line(pos, fill=(253, 106, 2), width=2, joint=None)
 
-
     @staticmethod
     def draw_radar(image, radars, angle, collider_lines):
         angle = np.array([-angle + math.pi/2, -angle + math.pi/4, -angle, -angle - math.pi/4, -angle - math.pi/2])
         end_pos = ColliderUtils.shortest_cut(radars, angle, collider_lines)
-        # rx, ry = radars[:, 0] + r * np.cos(angle), radars[:, 1] + r * np.sin(angle)
+
         for ra, end in zip(radars, end_pos):
             ImageUtils.draw_laser(image, [tuple(ra), (end[0], end[1])])
 
@@ -293,8 +290,6 @@ class ImageUtils:
         res = radar_pos.copy() - end_pos.copy()
         res = np.power(res[:,0],2) + np.power(res[:,1],2)
         return tuple(np.power(res, 0.5))
-
-
 
     @staticmethod
     def radar_data(pos, angle, collider):
@@ -316,7 +311,7 @@ class ImageUtils:
         # Show Speed
         font = ImageFont.truetype("arial.ttf", 32)
 
-        ImageDraw.Draw(image).text((130, 700), "Speed: {}    Status: {}".format(speed, status), font=font,
+        ImageDraw.Draw(image).text((130, 700), "Speed: {}    Status: {}".format(round(speed, 1), status), font=font,
                                    fill=(255, 255, 255), align="center", stroke_fill=(0, 0, 0), stroke_width=2)
 
         if draw_radar:
@@ -387,7 +382,5 @@ class MiscUtils:
     @staticmethod
     def rm_hist():
         if os.path.exists(Config.result_dir()):
-            print('*'*50)
             print('Removing previous results from {}'.format(Config.result_dir()))
             shutil.rmtree(Config.result_dir())
-            print('*'*50)

@@ -57,6 +57,7 @@ class ReNet:
             action = action[0]
         else:
             action = np.random.randint(0, N_ACTIONS)
+
         return action
 
     def store_transition(self, s, a, r, s_):
@@ -70,14 +71,12 @@ class ReNet:
             self.target_net.load_state_dict(self.eval_net.state_dict())
         self.learn_step_counter += 1
 
-
         sample_index = np.random.choice(MEM_CAP, BATCH)
         b_memory = self.memory[sample_index, :]
         b_s = torch.FloatTensor(b_memory[:, :LIDAR_NO])
         b_a = torch.LongTensor(b_memory[:, LIDAR_NO:LIDAR_NO+1].astype(int))
         b_r = torch.FloatTensor(b_memory[:, LIDAR_NO+1:LIDAR_NO+2])
         b_s_ = torch.FloatTensor(b_memory[:, -LIDAR_NO:])
-
 
         q_eval = self.eval_net(b_s).gather(1, b_a)
         q_next = self.target_net(b_s_).detach()
@@ -92,6 +91,7 @@ class ReNet:
 
 
 class DriveSim:
+
     sim_cnt = 0
 
     def __init__(self, map, max_fitness, speed, status):
@@ -130,12 +130,12 @@ class DriveSim:
 
         l1, l2, l3, l4, l5 = radar_data
 
-        if l3 >= 100 and self.speed < 10:
+        if l3 >= 150 and self.speed < 9.5:
             self.speed += 0.5
             self.status = 'Accelerating'
 
-        elif l3 < 100 and self.speed > 2:
-            self.speed -= 1
+        elif l3 < 150 and self.speed > 3.2:
+            self.speed -= 0.2
             self.status = 'Braking'
 
         if ColliderUtils.collision((self.pos, self.orientation), self.wall_rects) or self.travel_range > self.max_fitness:
@@ -202,7 +202,7 @@ class ReinforcementTrainer(Trainer):
         MiscUtils.rm_hist()
 
         print('*'*50)
-        print('Gathering experience...')
+        print('Starting RF Learning')
         print('*'*50)
 
         for epi in range(2000000):
@@ -221,6 +221,7 @@ class ReinforcementTrainer(Trainer):
 
                 if self.renet.memory_counter > MEM_CAP:
                     self.renet.learn()
+
                     if done:
 
                         print('episode: {} score: {}'.format(epi, self.sim.travel_range))

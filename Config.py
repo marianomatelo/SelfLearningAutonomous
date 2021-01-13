@@ -4,10 +4,6 @@ import os
 class Config:
 
     @staticmethod
-    def angle_clamp():
-        return 5
-
-    @staticmethod
     def car_width_base():
         return 15
     @classmethod
