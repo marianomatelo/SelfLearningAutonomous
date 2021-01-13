@@ -130,11 +130,11 @@ class DriveSim:
 
         l1, l2, l3, l4, l5 = radar_data
 
-        if l3 >= 150 and self.speed < 9.5:
-            self.speed += 0.5
+        if l3 >= 150 and self.speed < 8:
+            self.speed += 0.1
             self.status = 'Accelerating'
 
-        elif l3 < 150 and self.speed > 3.2:
+        elif l3 < 150 and self.speed > 3:
             self.speed -= 0.2
             self.status = 'Braking'
 
