@@ -116,7 +116,7 @@ class DriveSim:
             return range + (res[0]**2 + res[1]**2)**0.5
 
         m = self.map.draw_map_bg()
-        ImageUtils.draw_car(m, self.pos, self.orientation, self.colliders, speed=self.speed, status=self.status)
+        ImageUtils.draw_car(m, self.pos, self.orientation, self.colliders, speed=self.speed, status=self.travel_range)
         self.movie.append(m)
         old_pos = self.pos
 

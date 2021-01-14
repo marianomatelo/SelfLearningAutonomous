@@ -311,7 +311,7 @@ class ImageUtils:
         # Show Speed
         font = ImageFont.truetype("arial.ttf", 32)
 
-        ImageDraw.Draw(image).text((130, 700), "Speed: {}    Status: {}".format(round(speed, 1), status), font=font,
+        ImageDraw.Draw(image).text((150, 700), "Speed: {}    Distance: {}".format(round(speed, 1), int(status)), font=font,
                                    fill=(255, 255, 255), align="center", stroke_fill=(0, 0, 0), stroke_width=2)
 
         if draw_radar:
